@@ -33,12 +33,16 @@ monsterImage.src = 'images/monster.png';
 var hero = {
     speed: 256,
     x: 0,
-    y: 0
+    y: 0,
+    width: 32,
+    height: 32
 };
 
 var monster = {
     x: 0,
-    y: 0
+    y: 0,
+    width: 30,
+    height: 32
 };
 
 var monstersCaught = 0;
@@ -56,34 +60,35 @@ addEventListener('keyup', function (e) {
 
 // reset the game when the player catches a monster
 var reset = function () { 
-    hero.x = canvas.width / 2;
-    hero.y = canvas.height / 2;
-
     // place monster somewhere on the screen
-    monster.x = 32 + (Math.random() * (canvas.width - 64));
-    monster.y = 32 + (Math.random() * (canvas.height - 64));
+    monster.x = monster.width + (Math.random() * (canvas.width - (monster.width*2)));
+    monster.y = monster.height + (Math.random() * (canvas.height - (monster.height*2)));
 };
 
 // update game objects
 var update = function (modifier) {
     if (38 in keysDown || 87 in keysDown) { // player holding up
-        hero.y -= hero.speed * modifier;
+        if (hero.y > 0)
+            hero.y -= hero.speed * modifier;
     }
     if (40 in keysDown || 83 in keysDown) { // player holding down
-        hero.y += hero.speed * modifier;
+        if (hero.y < (canvas.height - hero.height))
+            hero.y += hero.speed * modifier;
     }
     if (37 in keysDown || 65 in keysDown) { // player holding left
-        hero.x -= hero.speed * modifier;
+        if (hero.x > 0)
+            hero.x -= hero.speed * modifier;
     }
     if (39 in keysDown || 68 in keysDown) { // player holding right
-        hero.x += hero.speed * modifier;
+        if (hero.x < (canvas.width - hero.width))
+            hero.x += hero.speed * modifier;
     }
 
     if (
-            hero.x <= (monster.x + 32)
-            && monster.x <= (hero.x + 32)
-            && hero.y <= (monster.y + 32)
-            && monster.y <= (hero.y + 32)
+            hero.x <= (monster.x + monster.width)
+            && monster.x <= (hero.x + hero.width)
+            && hero.y <= (monster.y + monster.height)
+            && monster.y <= (hero.y + hero.height)
        ) {
         ++monstersCaught;
         reset();
